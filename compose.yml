@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  api:
+    build: ./api #ビルドコンテキストの設定
+    ports:
+      - 8080:8080
+    depends_on:
+      # apiはdbに依存しているのでこのように書く
+      - db
+
+  # docker image build -t api-img ./api
+  # docker container run --name api -p 8080:8080 api-img
+
+  # docker compose up
+
+
+  db:
+    image: postgres:15
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgresdb
+    volumes:
+      - db-storage:/var/lib/postgresql/data
+      - ./db/initdb:/docker-entrypoint-initdb.d
+
+volumes:
+  db-storage:
